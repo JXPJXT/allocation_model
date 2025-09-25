@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import logging
 from datetime import datetime
+import gdown
 
 # Add current directory to path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -31,7 +32,14 @@ runner = None
 def init_runner():
     global runner
     try:
-        model_path = os.environ.get('MODEL_PATH', 'models/allocation_model.pkl')
+        # Google Drive link for the model
+        drive_url = 'https://drive.google.com/file/d/1ySUxfrQivGwoGffirbIaUGgNm-QaMgfg/view?usp=sharing'
+        model_path = os.path.join(current_dir, 'allocation_model.pkl')
+        
+        # Download model from Google Drive
+        logger.info("Downloading model from Google Drive...")
+        gdown.download(drive_url, model_path, quiet=False)
+        
         runner = SpeedOptimizedSupabaseRunner()
         logger.info("Runner initialized")
     except Exception as e:
